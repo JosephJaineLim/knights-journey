@@ -26,4 +26,7 @@
 <h1>Knight's Journey</h1>
 <p>
   The Knight's Tour is a classic puzzle and mathematical problem that involves moving a knight chess piece on an empty chessboard in such a way that the knight visits every square exactly once. The goal of the game is to find a sequence of knight moves that accomplishes this task.
+  <br><br>
+  Click <a href='https://jsphlm.itch.io/knights-journey'>here</a> to try/play it in your browser!
 </p>
+
