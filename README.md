@@ -9,6 +9,7 @@
   <li>Game Collections
   <ul>
     <li>Knight's Journey</li>
+    <li>Simon Says</li>
   </ul>
   </li>
 </ul>
@@ -30,3 +31,7 @@
   Click <a href='https://jsphlm.itch.io/knights-journey'>here</a> to try/play it in your browser!
 </p>
 
+<h1>Simon Says</h1>
+<p>
+  Simon Says is a classic memory and pattern recognition game that has been enjoyed by people of all ages for decades. The game requires players to follow a series of instructions given by a leader or "Simon." The challenge lies in remembering and reproducing the sequence correctly.
+</p>
