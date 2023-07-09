@@ -10,6 +10,7 @@
   <ul>
     <li>Knight's Journey</li>
     <li>Simon Says</li>
+    <li>Wordle Worker</li>
   </ul>
   </li>
 </ul>
@@ -34,4 +35,9 @@
 <h1>Simon Says</h1>
 <p>
   Simon Says is a classic memory and pattern recognition game that has been enjoyed by people of all ages for decades. The game requires players to follow a series of instructions given by a leader or "Simon." The challenge lies in remembering and reproducing the sequence correctly.
+</p>
+
+<h1>Wordle Worker</h1>
+<p>
+  Wordle Worker is a game I created for GMTK GAME JAM 2023 with the theme of ROLES REVERSED. It is the same with the game Wordle but the difference is that you're the one checking and validating answers that were submitted by others. 
 </p>
