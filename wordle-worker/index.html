@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <title>Wordle Worker</title>
+    <style>
+        body{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+
+            background-color: #121213;
+            font-family: 'Lato', sans-serif;
+        }
+        section{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+
+
+            height: 600px; 
+            width: 650px;
+            gap: 1rem;
+            color: #fff;
+        }
+        .app_box_container{
+            display: flex;
+            flex-direction: row;
+            gap:1rem;
+        }
+        .box{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100px;
+            width: 100px;
+            border: solid #3a3a3c;
+            font-size: 3.5rem;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+        .app_header{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-top: 20px;
+            gap: 1rem;
+        }
+        h1{
+            font-size: 2rem;
+            padding: 0;
+            margin: 0;
+        }
+        .app_word-container{
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+        }
+        .app_user-container{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: flex-start;
+        }
+        .app_user-container p{
+            margin: 0;
+            padding: 0;
+        }
+        .app_word-container p{
+            margin: 0 -2rem 0 0;
+            padding: 0;
+            letter-spacing: 2rem;
+        }
+        .app_footer{
+            width: 580px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+            margin: 0;
+        }
+        button{
+            width: 100%;
+            height: 50px;
+            margin-top: 15px;
+            border: solid #3a3a3c;
+            font-size: 2rem;
+            cursor: pointer;
+            background-color: #121213;
+            color: white;
+        }
+        #wotd{
+            font-size: 1rem;
+        }
+        .app_body{
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;    
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .app_body_timer{
+            width: 588px;
+            height: 5px;
+            background-color: #3a3a3c;
+        }
+    </style>
+</head>
+<body onload="changeField()">
+    <section>
+        <div class="app_header">
+            <h1>Wordle Worker</h1>
+        </div>
+        <div class="app_body">
+            <div class="app_word-container">
+                <p id="wotd"></p>
+            </div>
+            <div class="app_box_container" id="boxes">
+                <div class="box" id="0" onclick="colorChanger(this)"></div>
+                <div class="box" id="1" onclick="colorChanger(this)"></div>
+                <div class="box" id="2" onclick="colorChanger(this)"></div>
+                <div class="box" id="3" onclick="colorChanger(this)"></div>
+                <div class="box" id="4" onclick="colorChanger(this)"></div>
+            </div>
+            <div class="app_body_timer" id="timer"></div>
+        </div>
+        <div class="app_footer">
+            <p id="earnings"></p>
+        </div>
+    </section>
+
+    <script>
+        const dictionary = [
+            'apple','about','alert',
+            'basic','blood','board',
+            'cable','chose','clean',
+            'dance','delay','debut',
+            'entry','equal','error',
+            'fraud','found','frame',
+            'guest','guide','guard',
+            'heart','heavy','happy',
+            'input','issue','index',
+            'juice','joint','judge',
+            'kwown','label','logic',
+            'loose','lucky','lower',
+            'model','month','moral',
+            'needs','never','nurse',
+            'order','other','offer',
+            'paint','party','paper',
+            'round','route','royal',
+            'queen','quick','quite',
+            'sharp','suite','super',
+            'totem','topic','total',
+            'unity','union','under',
+            'waste','white','water',
+            'value','valve','valid',
+            'worth','young','yield',
+        ];
+
+        //Start
+        let audio = new Audio('click.wav');
+        let win = new Audio('win.wav');
+        let fail = new Audio('fail.mp3');
+        let guess = dictionary[Math.floor(Math.random() * 72)];
+        let WOTD = dictionary[Math.floor(Math.random() * 72)];
+        let totalEarnings = 0;
+        let colorCounter = 0;
+        let colors = ['rgb(83, 141, 78)','rgb(181, 159, 59)','rgb(58, 58, 60)'];
+        let width = 588;
+        let initialSpeed = .15;
+
+        let box0 = 0;
+        let box1 = 0;
+        let box2 = 0;
+        let box3 = 0;
+        let box4 = 0;
+        
+
+        setInterval(()=>{
+            width -= initialSpeed;
+            
+            if(width < 0)
+            {
+                width = 588;
+                WinLose();
+            }
+            document.getElementById('timer').style.width = `${width}px`;
+        },0);
+
+        function colorChanger(e){
+            if(e.id === '0')
+            {
+                if(box0 > 2)
+                {
+                    box0 = 0;
+                }
+                document.getElementById(e.id).style.backgroundColor = colors[box0];
+                box0++;
+
+            }else if(e.id === '1')
+            {
+                if(box1 > 2)
+                {
+                    box1 = 0;
+                }  
+                document.getElementById(e.id).style.backgroundColor = colors[box1];
+                box1++; 
+            }else if(e.id === '2')
+            {
+                if(box2 > 2)
+                {
+                    box2 = 0;
+                }
+                document.getElementById(e.id).style.backgroundColor = colors[box2];
+                box2++;   
+            }else if(e.id === '3')
+            {
+                if(box3 > 2)
+                {
+                    box3 = 0;
+                } 
+                document.getElementById(e.id).style.backgroundColor = colors[box3];
+                box3++;  
+            }else if(e.id === '4')
+            {
+                if(box4 > 2)
+                {
+                    box4 = 0;
+                }  
+                document.getElementById(e.id).style.backgroundColor = colors[box4];
+                box4++; 
+            }
+
+            if(audio.played)
+            {
+                audio.load()
+            }
+            audio.play()
+        }
+
+        function changeField(){
+
+            for(let i = 0;i<5;i++)
+            {
+                document.getElementById(i).innerText = guess[i];
+            }
+            document.getElementById('earnings').innerText = totalEarnings  
+            document.getElementById('wotd').innerText = `${WOTD}`;
+            document.getElementById('user').innerText = `Submitted by: user_${Math.floor(Math.random() * 100000)}`;
+        }
+        
+        //checker
+        document.addEventListener('keydown',e => {
+            console.log(e.key)
+            if(e.key !== ' ')
+            {
+                return;
+            }
+
+            WinLose();
+        })
+
+        function WinLose(){
+            let answer = [...guess].map((el,ind) => {
+
+                if(el === [...WOTD][ind]){
+                    return 'rgb(83, 141, 78)';
+                }
+                else if([...WOTD].includes(el))
+                {
+                    return 'rgb(181, 159, 59)';
+                }
+                else{
+                    return 'rgb(58, 58, 60)';
+                }
+            })
+
+            let solution = [];
+            
+            for(let i = 0; i<5 ;i++)
+            {
+                solution.push(document.getElementById(i).style.backgroundColor)
+            }
+
+            //CORRECT OR WRONG CHECKER
+            if(JSON.stringify(answer) === JSON.stringify(solution))
+            {
+                initialSpeed += .005;
+                width = 588;
+                totalEarnings += 1;
+                if(win.play)
+                {
+                    win.load();
+                }
+                win.play();
+                document.getElementById('earnings').style.color = 'rgb(83, 141, 78)';
+            }
+            else{
+                initialSpeed -= .005;
+                width = 588;
+                totalEarnings -= 1;
+                if(fail.played){
+                    fail.load()
+                }
+                fail.play();
+                document.getElementById('earnings').style.color = 'red';
+            }
+
+            setTimeout(() => {document.getElementById('earnings').style.color = '#fff'},300);
+            guess = dictionary[Math.floor(Math.random() * 72)];
+            WOTD = dictionary[Math.floor(Math.random() * 72)];
+            box0 = 0;
+            box1 = 0;
+            box2 = 0;
+            box3 = 0;
+            box4 = 0;
+
+            for(let i = 0;i<5;i++)
+            {
+                document.getElementById(i).style.backgroundColor = '';
+            }
+            changeField();
+        }
+    </script>
+</body>
+</html>
